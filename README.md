@@ -7,22 +7,16 @@ AgriBot is an intelligent agriculture recommendation system that helps farmers m
 ## Technical Details
 
 ### Frontend Technologies
-- **HTML5**: Semantic markup
-- **CSS3**: Modern styling with animations
-- **JavaScript**: Interactive functionality
+HTML , CSS, Javascript
 
 
 ### Backend Technologies
-- **Flask**: Web framework
-- **Scikit-learn**: Machine learning models
-- **Pandas**: Data processing
-- **NumPy**: Numerical computations
-- **Requests**: API integrations
+Flask, Scikit-Learn
 
 ### Machine Learning Models
-- **Random Forest**: Crop recommendation
-- **Logistic Regression**: Fertilizer recommendation
-- **Regional Data Integration**: Location-based climate analysis
+Random Forest: Crop recommendation
+Logistic Regression: Fertilizer recommendation
+
 
 
 ## Dataset 
