@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBot - Smart Agriculture Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .mode-selector {
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .mode-btn.active {
+            background: #27ae60;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .info-panel {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .info-panel h3 {
+            margin-bottom: 15px;
+            color: #27ae60;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header i {
+            font-size: 1.5rem;
+            color: #27ae60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.bot {
+            text-align: left;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-bubble {
+            background: #e9ecef;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .typing-indicator {
+            display: inline-block;
+            padding: 15px 20px;
+            background: #e9ecef;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6c757d;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .send-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .form-step h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .form-step p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+        }
+
+        .result-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .result-card .crop-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .chat-container {
+                order: 1;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .input-hint {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-seedling"></i> AgriBot</h1>
+            <p>Your Smart Agriculture Assistant for Crop & Fertilizer Recommendations</p>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h2>AgriBot</h2>
+                    <p>AI-Powered Agriculture</p>
+                </div>
+
+                <div class="mode-selector">
+                    <button id="crop-mode" class="mode-btn active">
+                        <i class="fas fa-leaf"></i>
+                        Crop Recommendation
+                    </button>
+                    <button id="fertilizer-mode" class="mode-btn">
+                        <i class="fas fa-flask"></i>
+                        Fertilizer Recommendation
+                    </button>
+                </div>
+
+                <div class="info-panel">
+                    <h3><i class="fas fa-info-circle"></i> Quick Reference</h3>
+                    <p><strong>Soil Types:</strong><br>
+                    0: Sandy • 1: Loamy • 2: Clayey<br>
+                    3: Silty • 4: Peaty • 5: Chalky • 6: Saline</p>
+                    <br>
+                    <p><strong>Crop Types:</strong><br>
+                    0: Rice • 1: Maize • 2: Wheat<br>
+                    3: Cotton • 4: Barley • 5: Sugarcane • 6: Other</p>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-header">
+                    <i class="fas fa-comments"></i>
+                    <div>
+                        <h3>AgriBot Assistant</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot">
+                        <div class="message-bubble">
+                            <i class="fas fa-robot"></i> Welcome! I'm AgriBot, your smart agriculture assistant. I can help you with crop recommendations and fertilizer suggestions based on your soil conditions and location.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="user-input" class="input-field" placeholder="Type your answer here..." autocomplete="off">
+                    <button id="send-btn" class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AgriBot {
+            constructor() {
+                this.API_BASE = 'http://127.0.0.1:5050';
+                this.mode = 'crop';
+                this.currentStep = 0;
+                this.formData = {};
+                this.isProcessing = false;
+                
+                this.cropSteps = [
+                    { key: 'N', prompt: 'Enter Nitrogen (N) value (0-140):', type: 'number', validation: { min: 0, max: 140 } },
+                    { key: 'P', prompt: 'Enter Phosphorus (P) value (5-145):', type: 'number', validation: { min: 5, max: 145 } },
+                    { key: 'K', prompt: 'Enter Potassium (K) value (5-205):', type: 'number', validation: { min: 5, max: 205 } },
+                    { key: 'Ph', prompt: 'Enter soil pH (0-14):', type: 'number', validation: { min: 0, max: 14 } },
+                    { key: 'state', prompt: 'Enter your state:', type: 'text' },
+                    { key: 'district', prompt: 'Enter your district:', type: 'text' },
+                    { key: 'start_month', prompt: 'Enter start month (1-12):', type: 'number', validation: { min: 1, max: 12 } },
+                    { key: 'end_month', prompt: 'Enter end month (1-12):', type: 'number', validation: { min: 1, max: 12 } }
+                ];
+                
+                this.fertilizerSteps = [
+                    { key: 'N', prompt: 'Enter Nitrogen (N) value (0-140):', type: 'number', validation: { min: 0, max: 140 } },
+                    { key: 'P', prompt: 'Enter Phosphorus (P) value (5-145):', type: 'number', validation: { min: 5, max: 145 } },
+                    { key: 'K', prompt: 'Enter Potassium (K) value (5-205):', type: 'number', validation: { min: 5, max: 205 } },
+                    { key: 'moisture', prompt: 'Enter soil moisture percentage (0-100):', type: 'number', validation: { min: 0, max: 100 } },
+                    { key: 'soil_type', prompt: 'Enter soil type code (0-6):', type: 'number', validation: { min: 0, max: 6 } },
+                    { key: 'crop_type', prompt: 'Enter crop type code (0-6):', type: 'number', validation: { min: 0, max: 6 } },
+                    { key: 'state', prompt: 'Enter your state:', type: 'text' },
+                    { key: 'district', prompt: 'Enter your district:', type: 'text' },
+                    { key: 'start_month', prompt: 'Enter start month (1-12):', type: 'number', validation: { min: 1, max: 12 } },
+                    { key: 'end_month', prompt: 'Enter end month (1-12):', type: 'number', validation: { min: 1, max: 12 } }
+                ];
+                
+                this.initializeEventListeners();
+                this.startConversation();
+            }
+            
+            initializeEventListeners() {
+                document.getElementById('send-btn').addEventListener('click', () => this.handleSend());
+                document.getElementById('user-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !this.isProcessing) {
+                        this.handleSend();
+                    }
+                });
+                
+                document.getElementById('crop-mode').addEventListener('click', () => this.switchMode('crop'));
+                document.getElementById('fertilizer-mode').addEventListener('click', () => this.switchMode('fertilizer'));
+            }
+            
+            switchMode(newMode) {
+                this.mode = newMode;
+                this.currentStep = 0;
+                this.formData = {};
+                this.isProcessing = false;
+                
+                // Update UI
+                document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`${newMode}-mode`).classList.add('active');
+                
+                this.clearMessages();
+                this.startConversation();
+            }
+            
+            startConversation() {
+                const modeText = this.mode === 'crop' ? 'Crop Recommendation' : 'Fertilizer Recommendation';
+                this.addMessage(`🌱 Let's get started with ${modeText}! I'll need some information about your soil and location.`, 'bot');
+                this.askNextQuestion();
+            }
+            
+            askNextQuestion() {
+                const steps = this.mode === 'crop' ? this.cropSteps : this.fertilizerSteps;
+                if (this.currentStep < steps.length) {
+                    const step = steps[this.currentStep];
+                    this.addMessage(step.prompt, 'bot');
+                    this.updateProgress();
+                } else {
+                    this.submitToBackend();
+                }
+            }
+            
+            handleSend() {
+                if (this.isProcessing) return;
+                
+                const input = document.getElementById('user-input');
+                const value = input.value.trim();
+                
+                if (!value) return;
+                
+                this.addMessage(value, 'user');
+                input.value = '';
+                
+                const steps = this.mode === 'crop' ? this.cropSteps : this.fertilizerSteps;
+                const currentStep = steps[this.currentStep];
+                
+                if (this.validateInput(value, currentStep)) {
+                    this.formData[currentStep.key] = this.convertValue(value, currentStep.type);
+                    this.currentStep++;
+                    this.updateProgress();
+                    
+                    setTimeout(() => {
+                        this.askNextQuestion();
+                    }, 500);
+                } else {
+                    this.addMessage(`❌ Invalid input. ${currentStep.validation ? `Please enter a value between ${currentStep.validation.min} and ${currentStep.validation.max}.` : 'Please enter a valid value.'}`, 'bot');
+                }
+            }
+            
+            validateInput(value, step) {
+                if (step.type === 'number') {
+                    const num = parseFloat(value);
+                    if (isNaN(num)) return false;
+                    if (step.validation) {
+                        return num >= step.validation.min && num <= step.validation.max;
+                    }
+                    return true;
+                }
+                return value.length > 0;
+            }
+            
+            convertValue(value, type) {
+                if (type === 'number') {
+                    return parseFloat(value);
+                }
+                return value;
+            }
+            
+            updateProgress() {
+                const steps = this.mode === 'crop' ? this.cropSteps : this.fertilizerSteps;
+                const progress = (this.currentStep / steps.length) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+            }
+            
+            async submitToBackend() {
+                this.isProcessing = true;
+                this.addMessage('🔄 Processing your request...', 'bot');
+                this.showTyping();
+                
+                try {
+                    const endpoint = this.mode === 'crop' ? '/crop' : '/fertilizer';
+                    const response = await fetch(`${this.API_BASE}${endpoint}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.formData)
+                    });
+                    
+                    const data = await response.json();
+                    this.hideTyping();
+                    
+                    if (data.status === 'success') {
+                        this.showResult(data);
+                    } else {
+                        this.addMessage(`❌ Error: ${data.message || 'Something went wrong'}`, 'bot');
+                    }
+                } catch (error) {
+                    this.hideTyping();
+                    this.addMessage(`❌ Connection error: ${error.message}`, 'bot');
+                }
+                
+                this.isProcessing = false;
+                setTimeout(() => {
+                    this.resetConversation();
+                }, 3000);
+            }
+            
+            showResult(data) {
+                const resultContainer = document.createElement('div');
+                resultContainer.className = 'result-card';
+                
+                const itemName = data.crop || data.fertilizer || 'Unknown';
+                const icon = this.mode === 'crop' ? '🌾' : '🧪';
+                const type = this.mode === 'crop' ? 'Crop' : 'Fertilizer';
+                
+                let additionalInfo = '';
+                if (data.recommendation) {
+                    additionalInfo += `<p style="margin: 10px 0; font-size: 0.9rem;">${data.recommendation}</p>`;
+                }
+                
+                if (data.next_steps && data.next_steps.length > 0) {
+                    additionalInfo += '<div style="margin-top: 15px;"><strong>Next Steps:</strong><ul style="text-align: left; margin: 10px 0;">';
+                    data.next_steps.forEach(step => {
+                        additionalInfo += `<li style="margin: 5px 0;">${step}</li>`;
+                    });
+                    additionalInfo += '</ul></div>';
+                }
+                
+                if (data.application_tips && data.application_tips.length > 0) {
+                    additionalInfo += '<div style="margin-top: 15px;"><strong>Application Tips:</strong><ul style="text-align: left; margin: 10px 0;">';
+                    data.application_tips.forEach(tip => {
+                        additionalInfo += `<li style="margin: 5px 0;">${tip}</li>`;
+                    });
+                    additionalInfo += '</ul></div>';
+                }
+                
+                resultContainer.innerHTML = `
+                    <h3>${icon} ${type} Recommendation</h3>
+                    <div class="crop-name">${itemName}</div>
+                    ${additionalInfo}
+                    <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.8;">
+                        <i class="fas fa-check-circle"></i> Analysis completed successfully
+                    </div>
+                `;
+                
+                document.getElementById('chat-messages').appendChild(resultContainer);
+                this.scrollToBottom();
+            }
+            
+            addMessage(text, sender) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+                bubble.innerHTML = text;
+                
+                messageDiv.appendChild(bubble);
+                messagesContainer.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+            
+            showTyping() {
+                const messagesContainer = document.getElementById('chat-messages');
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot';
+                typingDiv.id = 'typing-indicator';
+                
+                typingDiv.innerHTML = `
+                    <div class="typing-indicator">
+                        <div class="typing-dots">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>
+                `;
+                
+                messagesContainer.appendChild(typingDiv);
+                this.scrollToBottom();
+            }
+            
+            hideTyping() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            clearMessages() {
+                document.getElementById('chat-messages').innerHTML = '';
+            }
+            
+            resetConversation() {
+                this.currentStep = 0;
+                this.formData = {};
+                this.updateProgress();
+                this.startConversation();
+            }
+            
+            scrollToBottom() {
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new AgriBot();
+        });
+    </script>
+</body>
+</html>
