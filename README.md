@@ -129,7 +129,7 @@ python start.py
 **Live Demo URL:**
 `https://agri-bot-mehak-rana-12201059.vercel.app/`
 
-### Demo Videoaye
+### Demo Video
 **YouTube Link:**
 `https://youtu.be/5_zgNvHJw-A`
 
