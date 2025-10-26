@@ -602,11 +602,11 @@
                     if (data.status === 'success') {
                         this.showResult(data);
                     } else {
-                        this.addMessage(`❌ Error: ${data.message || 'Something went wrong'}`, 'bot');
+                        this.addMessage(` Error: ${data.message || 'Something went wrong'}`, 'bot');
                     }
                 } catch (error) {
                     this.hideTyping();
-                    this.addMessage(`❌ Connection error: ${error.message}`, 'bot');
+                    this.addMessage(` Connection error: ${error.message}`, 'bot');
                 }
                 
                 this.isProcessing = false;

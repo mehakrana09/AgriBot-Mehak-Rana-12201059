@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-"""
-AgriBot Startup Script
-This script helps you start the AgriBot application with proper setup.
-"""
+
 
 import os
 import sys
@@ -12,21 +8,21 @@ import time
 from pathlib import Path
 
 def check_dependencies():
-    """Check if required dependencies are installed"""
+   
     try:
         import flask
         import pandas
         import numpy
         import sklearn
         import requests
-        print("✅ All dependencies are installed")
+        print("All dependencies are installed")
         return True
     except ImportError as e:
         print(f"Missing dependency: {e}")
         print("Installing dependencies...")
         try:
             subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
-            print("✅ Dependencies installed successfully")
+            print("Dependencies installed successfully")
             return True
         except subprocess.CalledProcessError:
             print("Failed to install dependencies")

@@ -131,7 +131,7 @@ def _predict_crop_from_payload(payload: dict):
 
 @app.route("/crop", methods=["POST", "OPTIONS"])
 def crop():
-    # Handle preflight explicitly
+    
     if request.method == "OPTIONS":
         resp = jsonify({"status": "ok"})
         resp.headers.add("Access-Control-Allow-Origin", "*")
@@ -176,11 +176,11 @@ def crop():
         
         crop_name = _predict_crop_from_payload(payload)
         
-        # Enhanced response with additional information
+       
         response_data = {
             "status": "success",
             "crop": crop_name,
-            "confidence": "high",  # You can add confidence scoring later
+            "confidence": "high", 
             "recommendation": f"Based on your soil analysis, {crop_name} is the most suitable crop for your conditions.",
             "next_steps": [
                 "Prepare your soil according to the crop requirements",
