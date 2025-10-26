@@ -452,7 +452,9 @@
     <script>
         class AgriBot {
             constructor() {
-                this.API_BASE = 'http://127.0.0.1:5050';
+                this.API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? 'http://127.0.0.1:5050'  
+                    : 'https://agribot-mehak-rana-12201059-1.onrender.com';
                 this.mode = 'crop';
                 this.currentStep = 0;
                 this.formData = {};
